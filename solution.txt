@@ -1,0 +1,62 @@
+//1. Netflix Originals with IMDb scores higher than the average IMDb score of all titles //
+
+SELECT title, IMDBScore
+FROM Netflix_Originals  
+WHERE IMDBScore > (SELECT AVG(IMDBScore) FROM Netflix_Originals);
+SHOW TABLES;
+
+//2. Count of Netflix Originals in each genre//
+
+SELECT gd.Genre, COUNT(no.title) AS total_originals  
+FROM Netflix_Originals no  
+JOIN Genre_Details gd ON no.GenreID = gd.GenreID  
+GROUP BY gd.Genre  
+ORDER BY total_originals DESC;
+
+//3. Top 3 genres with the highest average IMDb scores and their Netflix Originals count//
+
+SELECT gd.genre, AVG(no.IMDBScore) AS avg_IMDBScore, COUNT(no.title) AS total_originals
+FROM Netflix_Originals no
+JOIN Genre_Details gd ON no.GenreID  = gd.GenreID 
+GROUP BY gd.genre
+ORDER BY avg_IMDBScore DESC
+LIMIT 3;
+
+//Top 3 genres with the highest average IMDb scores and their Netflix Originals count//
+
+SELECT gd.genre, AVG(no.IMDBScore) AS avg_IMDBScore
+FROM Netflix_Originals no
+JOIN Genre_Details gd ON no.GenreID  = gd.GenreID 
+GROUP BY gd.genre
+ORDER BY avg_IMDBScore DESC;
+
+//Top 10 longest Netflix Originals by runtime//
+
+SELECT title, runtime
+FROM Netflix_Originals
+ORDER BY runtime DESC
+LIMIT 10;
+
+//Netflix Originals titles along with their respective genres//
+
+SELECT no.title, gd.genre
+FROM Netflix_Originals no
+JOIN Genre_Details gd ON no.GenreID  = gd.GenreID 
+ORDER BY no.title;
+
+//Rank Netflix Originals based on their IMDb scores within each genre//
+
+SELECT no.title, gd.genre, no.IMDBScore,
+RANK() OVER (PARTITION BY gd.genre ORDER BY no.IMDBScore DESC) AS rank_in_genre
+FROM Netflix_Originals no
+JOIN Genre_Details gd ON no.GenreID = gd.GenreID ;
+
+
+
+
+
+
+
+
+
+
